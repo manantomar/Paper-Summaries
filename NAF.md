@@ -1,0 +1,11 @@
+## Continuous Deep Q-Learning with Model-based Acceleration
+
+###### Shixiang Gu, Timothy Lillicrap, Ilya Sutskever, Sergey Levine
+
+This paper aims at making deep Q-Learning work for continuous action spaces. Deep Q-Learning has proved to work excellently for discrete action spaces. However, when considering continuous action spaces, the maximisation of the Q value for the successor state (while calculating target values) turns out not to be a straightforward affair.  This motivates the use of Actor Critic methods such as DDPG to be applied for continuous action tasks. 
+
+The authors propose writing the Q function as a sum of the value function at the successor state and the advantage function, where the advantage function is quadratic in the mean action.  The benefit of doing this is that the maximisation of the Q function now has a direct solution, which is the mean action. Therefore, the Q value at the successor state can be written just by the value function at that state. Also, the policy at any time step is the mean action plus some correlated noise which is sampled from an OU (Ornstein Uhlenbach) process. Note that the mean action, the value function and the quadratic term matrix in the advantage function are all defined by neural networks. 
+
+Another idea that is explored in this paper is that of imaginative rollouts. If a model of the forward dynamics can be learned, then this model can be used to produce synthetic rollouts which can be stored in the replay buffer. This is similar to the Dyna-Q architecture and can potentially improve sample efficiency. The authors also suggest to add rollouts produced by trajectory optimization techniques such as iLQG which again makes use of the learned dynamics model. 
+
+An important observation is that adding iLQG trajectories to the replay buffer does not significantly improve the sample efficiency. One of the reasons for this is that model-free policies are very different from that provided by iLQG controllers and thus the training update is unable to retrieve any useful information from these rollouts. 
